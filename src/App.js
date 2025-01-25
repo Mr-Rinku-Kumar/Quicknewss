@@ -26,6 +26,7 @@ import LoadingBar from 'react-top-loading-bar'
       />
         <Routes>
           <Route exact path="/" element={ <Newss setProgress={setProgress}  pageSize={pageSize} country="us" category="general" />} />
+          <Route exact path="/quicknews" element={ <Newss setProgress={setProgress}  pageSize={pageSize} country="us" category="general" />} />
           <Route exact path="/general" element={ <Newss setProgress={setProgress}  key="general" pageSize={pageSize} country="us" category="general" />} />
           <Route exact path="/business" element={ <Newss setProgress={setProgress}  key="business" pageSize={pageSize} country="us" category="business" />} />
           <Route exact path="/entertainment" element={ <Newss setProgress={setProgress}  key="entertainment" pageSize={pageSize} country="us" category="entertainment" />} />
