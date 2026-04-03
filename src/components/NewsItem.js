@@ -1,33 +1,19 @@
 import React from "react";
 
-const NewsItem = (props) => {
-  let { title, description, imgUrl, newsUrl, author, date, source } = props;
-
+const NewsItem = ({ title, description, imgUrl, newsUrl, author, date, source }) => {
   return (
     <div className="my-3">
       <div className="card">
 
-        {/* Badge */}
         <span
-          className="badge rounded-pill bg-danger"
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            position: "absolute",
-            right: "0",
-            zIndex: "1"
-          }}
+          className="badge bg-danger"
+          style={{ position: "absolute", right: 0, zIndex: 1 }}
         >
           {source}
         </span>
 
-        {/* Image */}
         <img
-          src={
-            imgUrl
-              ? imgUrl
-              : "https://via.placeholder.com/300x200?text=No+Image"
-          }
+          src={imgUrl || "https://via.placeholder.com/300x200"}
           className="card-img-top"
           alt="news"
         />
