@@ -17,21 +17,22 @@ const Newss = ({
     str.charAt(0).toUpperCase() + str.slice(1);
 
   const updateNews = async () => {
-    setProgress && setProgress(10);
+  setProgress && setProgress(10);
 
-    const url = `https://gnews.io/api/v4/top-headlines?country=${country}&category=${category}&apikey=${process.env.REACT_APP_API_KEY}&max=${pageSize}&page=${page}`;
+  setLoading(true);
 
-    setLoading(true);
-    setProgress && setProgress(30);
+  const url = `/api/news?category=${category}&page=${page}`;
 
-    let res = await fetch(url);
-    let data = await res.json();
+  setProgress && setProgress(30);
 
-    setArticles(data.articles || []);
-    setLoading(false);
+  let res = await fetch(url);
+  let data = await res.json();
 
-    setProgress && setProgress(100);
-  };
+  setArticles(data.articles || []);
+  setLoading(false);
+
+  setProgress && setProgress(100);
+};
 
   useEffect(() => {
     document.title = `${capitalize(category)} - QuickNews`;
@@ -39,18 +40,18 @@ const Newss = ({
     // eslint-disable-next-line
   }, []);
 
-  const fetchMoreData = async () => {
-    const nextPage = page + 1;
+ const fetchMoreData = async () => {
+  const nextPage = page + 1;
 
-    const url = `https://gnews.io/api/v4/top-headlines?country=${country}&category=${category}&apikey=${process.env.REACT_APP_API_KEY}&max=${pageSize}&page=${nextPage}`;
+  const url = `/api/news?category=${category}&page=${nextPage}`;
 
-    setPage(nextPage);
+  setPage(nextPage);
 
-    let res = await fetch(url);
-    let data = await res.json();
+  let res = await fetch(url);
+  let data = await res.json();
 
-    setArticles((prev) => prev.concat(data.articles || []));
-  };
+  setArticles((prev) => prev.concat(data.articles || []));
+};
 
   return (
     <div className="container my-3">
