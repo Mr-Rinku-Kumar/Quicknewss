@@ -16,23 +16,44 @@ const Newss = ({
   const capitalize = (str) =>
     str.charAt(0).toUpperCase() + str.slice(1);
 
+  // 🔥 ENV based URL
+  const getUrl = (pageNo) => {
+    if (process.env.NODE_ENV === "development") {
+      // 👉 Local (direct API)
+      return `https://gnews.io/api/v4/top-headlines?country=${country}&category=${category}&apikey=${process.env.REACT_APP_API_KEY}&max=${pageSize}&page=${pageNo}`;
+    } else {
+      // 👉 Vercel (backend proxy)
+      return `/api/news?category=${category}&page=${pageNo}`;
+    }
+  };
+
   const updateNews = async () => {
-  setProgress && setProgress(10);
+    try {
+      setProgress && setProgress(10);
+      setLoading(true);
 
-  setLoading(true);
+      const url = getUrl(page);
 
-  const url = `/api/news?category=${category}&page=${page}`;
+      setProgress && setProgress(30);
 
-  setProgress && setProgress(30);
+      let res = await fetch(url);
 
-  let res = await fetch(url);
-  let data = await res.json();
+      // 🔥 ERROR HANDLING (important)
+      if (!res.ok) {
+        throw new Error("API response not OK");
+      }
 
-  setArticles(data.articles || []);
-  setLoading(false);
+      let data = await res.json();
 
-  setProgress && setProgress(100);
-};
+      setArticles(data.articles || []);
+      setLoading(false);
+
+      setProgress && setProgress(100);
+    } catch (error) {
+      console.error("Error fetching news:", error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     document.title = `${capitalize(category)} - QuickNews`;
@@ -40,18 +61,26 @@ const Newss = ({
     // eslint-disable-next-line
   }, []);
 
- const fetchMoreData = async () => {
-  const nextPage = page + 1;
+  const fetchMoreData = async () => {
+    try {
+      const nextPage = page + 1;
+      setPage(nextPage);
 
-  const url = `/api/news?category=${category}&page=${nextPage}`;
+      const url = getUrl(nextPage);
 
-  setPage(nextPage);
+      let res = await fetch(url);
 
-  let res = await fetch(url);
-  let data = await res.json();
+      if (!res.ok) {
+        throw new Error("API response not OK");
+      }
 
-  setArticles((prev) => prev.concat(data.articles || []));
-};
+      let data = await res.json();
+
+      setArticles((prev) => prev.concat(data.articles || []));
+    } catch (error) {
+      console.error("Error loading more news:", error);
+    }
+  };
 
   return (
     <div className="container my-3">
